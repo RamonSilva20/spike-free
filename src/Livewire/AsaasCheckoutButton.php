@@ -4,14 +4,23 @@ namespace Opcodes\Spike\Livewire;
 
 use Livewire\Component;
 use Opcodes\Spike\Cart;
+use Opcodes\Spike\Facades\PaymentGateway;
 use Opcodes\Spike\Facades\Spike;
 
 class AsaasCheckoutButton extends Component
 {
     public function checkout()
     {
-        // TODO: Implement checkout process
-        // This would redirect to Asaas or process payment
+        $cart = $this->cart();
+
+        // Process payment using Asaas
+        if (PaymentGateway::payForCart($cart)) {
+            // Payment successful, redirect to success page
+            return redirect()->route('spike.purchase.validate-cart', ['cart' => $cart->id]);
+        } else {
+            // Payment failed
+            session()->flash('error', 'Erro ao processar pagamento. Tente novamente.');
+        }
     }
 
     public function render()
