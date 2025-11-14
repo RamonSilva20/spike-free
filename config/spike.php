@@ -388,4 +388,50 @@ return [
         'allow_incomplete_subscription_updates' => false,
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Asaas payment gateway configuration
+    |--------------------------------------------------------------------------
+    |
+    | This section is used to configure the Asaas payment gateway only.
+    |
+    */
+
+    'asaas' => [
+
+        /*
+        |--------------------------------------------------------------------------
+        | Asaas API Key
+        |--------------------------------------------------------------------------
+        |
+        | Your Asaas API key. You can find it in your Asaas dashboard.
+        |
+        */
+
+        'api_key' => env('ASAAS_API_KEY'),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Asaas Environment
+        |--------------------------------------------------------------------------
+        |
+        | The Asaas environment to use. Can be 'sandbox' or 'production'.
+        |
+        */
+
+        'environment' => env('ASAAS_ENVIRONMENT', 'sandbox'),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Asaas Webhook Secret
+        |--------------------------------------------------------------------------
+        |
+        | The webhook secret for verifying Asaas webhooks.
+        |
+        */
+
+        'webhook_secret' => env('ASAAS_WEBHOOK_SECRET'),
+
+    ],
+
 ];

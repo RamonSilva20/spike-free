@@ -69,6 +69,7 @@ class SpikeServiceProvider extends ServiceProvider
             static::$_cached_payment_provider = match (true) {
                 class_exists(\Laravel\Cashier\Cashier::class) => PaymentProvider::Stripe,
                 class_exists(\Laravel\Paddle\Cashier::class) => PaymentProvider::Paddle,
+                class_exists(\Opcodes\Spike\Asaas\PaymentGateway::class) => PaymentProvider::Asaas,
                 default => PaymentProvider::None,
             };
         }
@@ -90,6 +91,7 @@ class SpikeServiceProvider extends ServiceProvider
         match (static::paymentProvider()) {
             PaymentProvider::Stripe => $this->registerCashierStripe(),
             PaymentProvider::Paddle => $this->registerCashierPaddle(),
+            PaymentProvider::Asaas => $this->registerCashierAsaas(),
             default => null,
         };
     }
@@ -123,6 +125,11 @@ class SpikeServiceProvider extends ServiceProvider
         \Laravel\Paddle\Cashier::useTransactionModel(PaddleTransaction::class);
     }
 
+    protected function registerCashierAsaas(): void
+    {
+        $this->app->bind('spike.payment-gateway', \Opcodes\Spike\Asaas\PaymentGateway::class);
+    }
+
     public function boot(): void
     {
         $this->registerRoutes();
@@ -146,6 +153,7 @@ class SpikeServiceProvider extends ServiceProvider
         match (static::paymentProvider()) {
             PaymentProvider::Stripe => $this->bootCashierStripe(),
             PaymentProvider::Paddle => $this->bootCashierPaddle(),
+            PaymentProvider::Asaas => $this->bootCashierAsaas(),
             default => null,
         };
 
@@ -164,6 +172,12 @@ class SpikeServiceProvider extends ServiceProvider
         self::booted(function () {
             Event::listen(\Laravel\Paddle\Events\WebhookHandled::class, PaddleEventListener::class);
         });
+    }
+
+    protected function bootCashierAsaas(): void
+    {
+        // TODO: Register Asaas webhook listener if needed
+        // For now, no event listener since Asaas webhooks are custom
     }
 
     protected function configure(): void
@@ -209,6 +223,7 @@ class SpikeServiceProvider extends ServiceProvider
                 match (static::paymentProvider()) {
                     PaymentProvider::Stripe => __DIR__.'/../database/migrations/stripe',
                     PaymentProvider::Paddle => __DIR__.'/../database/migrations/paddle',
+                    PaymentProvider::Asaas => __DIR__.'/../database/migrations/asaas',
                     default => null,
                 },
                 __DIR__.'/../database/migrations',
@@ -248,6 +263,8 @@ class SpikeServiceProvider extends ServiceProvider
                 $databaseMigrations[__DIR__.'/../database/migrations/stripe'] = $this->app->databasePath('migrations');
             } elseif (static::paymentProvider() === PaymentProvider::Paddle) {
                 $databaseMigrations[__DIR__.'/../database/migrations/paddle'] = $this->app->databasePath('migrations');
+            } elseif (static::paymentProvider() === PaymentProvider::Asaas) {
+                $databaseMigrations[__DIR__.'/../database/migrations/asaas'] = $this->app->databasePath('migrations');
             }
 
             $this->publishes($databaseMigrations, 'spike-migrations');
