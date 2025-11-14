@@ -307,6 +307,7 @@ class SpikeServiceProvider extends ServiceProvider
             // Billing
             Livewire::component('spike::stripe-payment-methods', StripePaymentMethods::class);
             Livewire::component('spike::paddle-payment-method', PaddlePaymentMethod::class);
+            Livewire::component('spike::asaas-payment-methods', \Opcodes\Spike\Http\Livewire\AsaasPaymentMethods::class);
             Livewire::component('spike::invoices', Invoices::class);
 
             // Modals
@@ -317,6 +318,7 @@ class SpikeServiceProvider extends ServiceProvider
             // Extra
             Livewire::component('spike::update-payment-method-paddle', UpdatePaymentMethodPaddle::class);
             Livewire::component('spike::product-checkout-button-paddle', PaddleCheckoutButton::class);
+            Livewire::component('spike::product-checkout-button-asaas', \Opcodes\Spike\Livewire\AsaasCheckoutButton::class);
         }
     }
 

@@ -1,0 +1,112 @@
+ ## Viabilidade Técnica
+
+   Pontos Positivos:
+
+       * Arquitetura modular com PaymentProvider enum e contratos bem definidos
+       * Separação clara entre Stripe/Paddle em namespaces dedicados
+       * PaymentGatewayContract define interface comum
+       * ServiceProvider detecta automaticamente o provider baseado em classes disponíveis
+       * Sistema de migrações específicas por provider
+
+   Desafios:
+
+       * Asaas não tem pacote oficial Laravel como Cashier/Cashier-Paddle
+       * Necessária implementação completa da integração (assinaturas, webhooks, etc.)
+       * Gestão de estado de assinaturas e pagamentos customizada
+
+   ## Passos para Implementação
+
+   ### 1. Preparação Inicial
+
+       * Criar fork/branch do Spike
+       * Adicionar dependência do SDK Asaas no composer.json
+       * Atualizar PaymentProvider enum para incluir Asaas
+
+   ### 2. Estrutura de Código
+
+       * Criar namespace src/Asaas/ similar aos existentes
+       * Implementar classes principais:
+           * PaymentGateway (implementa PaymentGatewayContract)
+
+           * Subscription e SubscriptionItem
+
+           * Customer e Transaction
+
+           * Webhook listener
+
+           * Cart checkout
+
+   ### 3. Migrações de Banco
+
+       * Criar database/migrations/asaas/ com tabelas específicas
+       * Adaptar schemas para modelo Asaas (assinaturas, transações, etc.)
+
+   ### 4. Integração no ServiceProvider
+
+       * Atualizar detecção automática de provider
+       * Registrar bindings e listeners específicos Asaas
+       * Configurar rotas de webhook
+
+   ### 5. Configuração
+
+       * Adicionar seção asaas no config/spike.php
+       * Configurar webhooks, chaves API, etc.
+
+   ### 6. UI/Frontend
+
+       * Adaptar componentes Livewire para Asaas
+       * Implementar métodos de pagamento Asaas
+       * Ajustar checkout e modais
+
+   ### 7. Testes
+
+       * Criar suítes de teste específicas Asaas
+       * Implementar PaymentGatewayFake para Asaas
+
+   ### 8. Documentação
+
+       * Atualizar docs para incluir Asaas
+       * Exemplos de configuração e uso
+
+   ## Estimativa de Esforço
+
+   Tempo aproximado: 2-4 semanas para desenvolvedor experiente
+   Complexidade: Alta - requer conhecimento profundo de APIs Asaas e arquitetura Spike
+
+   ## Recomendação
+
+   Como o Asaas é popular no Brasil e o Spike já tem arquitetura preparada, vale a pena implementar. Sugiro começar criando um proof-of-concept com as funcionalidades básicas (pagamento de produtos) antes de
+   partir para assinaturas recorrentes.
+
+
+# TODO 
+
+- Create src/Asaas/ namespace directory structure
+- Implement Asaas\PaymentGateway class implementing PaymentGatewayContract
+- Implement Asaas\SpikeBillable class
+- Implement Asaas\Subscription class
+- Implement Asaas\SubscriptionItem class
+- Implement Asaas\Customer class
+- Implement Asaas\Transaction class
+- Implement Asaas\CartCheckout class
+- Implement Asaas\PaymentMethod class (if needed)
+- Implement Asaas\WebhookListener class
+- Create database/migrations/asaas/ directory with Asaas-specific migrations
+- Create migration for Asaas customers table
+- Create migration for Asaas subscriptions table
+- Create migration for Asaas subscription items table
+- Create migration for Asaas transactions table
+- Update SpikeServiceProvider to detect Asaas (e.g., via config or custom class check)
+- Add registerCashierAsaas() method in ServiceProvider
+- Add bootCashierAsaas() method in ServiceProvider
+- Add Asaas-specific bindings and listeners in ServiceProvider
+- Configure Asaas webhook routes in ServiceProvider
+- Add 'asaas' configuration section to config/spike.php
+- Configure Asaas API keys, webhooks, and other settings in config
+- Adapt Livewire components for Asaas (e.g., AsaasPaymentMethod)
+- Implement Asaas payment methods in frontend
+- Adjust checkout modals for Asaas
+- Create tests/Feature/Asaas/ directory with test suites
+- Implement Asaas\PaymentGatewayFake for testing
+- Update documentation to include Asaas setup and usage
+- Create examples for Asaas configuration
