@@ -13,7 +13,7 @@ class PaymentGatewayFake extends PaymentGateway
     protected ?CarbonInterface $renewalDate = null;
     protected bool $hasIncompletePayment = false;
 
-    public function payForCart(Cart $cart): bool
+    public function payForCart(Cart $cart, array $paymentData = []): bool
     {
         foreach ($cart->items as $item) {
             if (!isset($this->purchasedProducts[$item->product_id])) {

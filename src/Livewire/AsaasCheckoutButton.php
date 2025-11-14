@@ -9,12 +9,25 @@ use Opcodes\Spike\Facades\Spike;
 
 class AsaasCheckoutButton extends Component
 {
+    public bool $showPaymentForm = false;
+    public array $paymentData = [];
+
+    protected $listeners = ['paymentMethodSelected'];
+
     public function checkout()
     {
+        // Show payment method selection form
+        $this->showPaymentForm = true;
+    }
+
+    public function paymentMethodSelected($paymentData)
+    {
+        $this->paymentData = $paymentData;
+
         $cart = $this->cart();
 
-        // Process payment using Asaas
-        if (PaymentGateway::payForCart($cart)) {
+        // Process payment using Asaas with selected payment method
+        if (PaymentGateway::payForCart($cart, $this->paymentData)) {
             // Payment successful, redirect to success page
             return redirect()->route('spike.purchase.validate-cart', ['cart' => $cart->id]);
         } else {
@@ -27,6 +40,7 @@ class AsaasCheckoutButton extends Component
     {
         return view('spike::livewire.asaas-checkout-button', [
             'asaasCheckout' => $this->getAsaasCheckoutObject(),
+            'cart' => $this->cart(),
         ]);
     }
 

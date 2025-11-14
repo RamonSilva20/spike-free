@@ -308,6 +308,7 @@ class SpikeServiceProvider extends ServiceProvider
             Livewire::component('spike::stripe-payment-methods', StripePaymentMethods::class);
             Livewire::component('spike::paddle-payment-method', PaddlePaymentMethod::class);
             Livewire::component('spike::asaas-payment-methods', \Opcodes\Spike\Http\Livewire\AsaasPaymentMethods::class);
+            Livewire::component('spike::asaas-payment-form', \Opcodes\Spike\Http\Livewire\AsaasPaymentForm::class);
             Livewire::component('spike::invoices', Invoices::class);
 
             // Modals

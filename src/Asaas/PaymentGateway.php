@@ -29,7 +29,7 @@ class PaymentGateway implements PaymentGatewayContract
         return null;
     }
 
-    public function payForCart(Cart $cart): bool
+    public function payForCart(Cart $cart, array $paymentData = []): bool
     {
         $billable = $this->getBillable();
         $asaasService = AsaasService::make();
@@ -40,16 +40,19 @@ class PaymentGateway implements PaymentGatewayContract
         });
 
         // Prepare payment data
-        $paymentData = [
+        $defaultPaymentData = [
             'customer' => $this->getOrCreateAsaasCustomer($billable),
-            'billingType' => 'UNDEFINED', // Let user choose
+            'billingType' => $paymentData['billingType'] ?? 'UNDEFINED',
             'value' => $total / 100, // Convert cents to reais
-            'dueDate' => now()->addDays(3)->format('Y-m-d'),
+            'dueDate' => $paymentData['dueDate'] ?? now()->addDays(3)->format('Y-m-d'),
             'description' => 'Compra - ' . $cart->id,
             'externalReference' => 'cart_' . $cart->id,
             'installmentCount' => 1,
             'installmentValue' => $total / 100,
         ];
+
+        // Merge with payment-specific data
+        $paymentData = array_merge($defaultPaymentData, $paymentData);
 
         try {
             $response = $asaasService->createPayment($paymentData);
