@@ -32,6 +32,9 @@ class Transaction extends Model
         'invoice_url',
         'bank_slip_url',
         'invoice_number',
+        'pix_qr_code',
+        'pix_payload',
+        'pix_expiration_date',
         'deleted',
     ];
 
@@ -39,6 +42,7 @@ class Transaction extends Model
         'payment_date' => 'datetime',
         'due_date' => 'datetime',
         'effective_date' => 'datetime',
+        'pix_expiration_date' => 'datetime',
         'value' => 'decimal:2',
         'net_value' => 'decimal:2',
         'original_value' => 'decimal:2',

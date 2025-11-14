@@ -36,6 +36,9 @@ return new class extends Migration
             $table->string('invoice_url')->nullable();
             $table->string('bank_slip_url')->nullable();
             $table->string('invoice_number')->nullable();
+            $table->text('pix_qr_code')->nullable(); // PIX QR code image (base64)
+            $table->text('pix_payload')->nullable(); // PIX copy-paste payload
+            $table->string('pix_expiration_date')->nullable();
             $table->boolean('deleted')->default(false);
             $table->timestamps();
 

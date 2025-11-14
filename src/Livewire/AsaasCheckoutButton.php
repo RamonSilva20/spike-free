@@ -10,7 +10,9 @@ use Opcodes\Spike\Facades\Spike;
 class AsaasCheckoutButton extends Component
 {
     public bool $showPaymentForm = false;
+    public bool $showConfirmation = false;
     public array $paymentData = [];
+    public $transaction = null;
 
     protected $listeners = ['paymentMethodSelected'];
 
@@ -28,8 +30,10 @@ class AsaasCheckoutButton extends Component
 
         // Process payment using Asaas with selected payment method
         if (PaymentGateway::payForCart($cart, $this->paymentData)) {
-            // Payment successful, redirect to success page
-            return redirect()->route('spike.purchase.validate-cart', ['cart' => $cart->id]);
+            // Payment successful, get the transaction and show confirmation
+            $this->transaction = \Opcodes\Spike\Asaas\Transaction::where('external_reference', 'cart_' . $cart->id)->first();
+            $this->showPaymentForm = false;
+            $this->showConfirmation = true;
         } else {
             // Payment failed
             session()->flash('error', 'Erro ao processar pagamento. Tente novamente.');

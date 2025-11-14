@@ -2,6 +2,7 @@
 
 namespace Opcodes\Spike\Asaas;
 
+use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\Log;
 use Opcodes\Spike\Asaas\Services\AsaasService;
@@ -75,6 +76,10 @@ class PaymentGateway implements PaymentGatewayContract
                 'due_date' => $response['dueDate'],
                 'invoice_url' => $response['invoiceUrl'] ?? null,
                 'bank_slip_url' => $response['bankSlipUrl'] ?? null,
+                'invoice_number' => $response['invoiceNumber'] ?? null,
+                'pix_qr_code' => $response['encodedImage'] ?? null, // PIX QR code
+                'pix_payload' => $response['payload'] ?? null, // PIX copy-paste
+                'pix_expiration_date' => isset($response['expirationDate']) ? Carbon::parse($response['expirationDate']) : null,
             ]);
 
             return true;

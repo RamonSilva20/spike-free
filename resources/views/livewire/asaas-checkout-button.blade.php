@@ -1,4 +1,6 @@
-@if($showPaymentForm)
+@if($showConfirmation && $transaction)
+    <livewire:spike::asaas-payment-confirmation :transaction="$transaction" :key="'confirmation-'.$transaction->id" />
+@elseif($showPaymentForm)
     <livewire:spike::asaas-payment-form :cart="$cart" @payment-method-selected="paymentMethodSelected" />
 @else
     <button
